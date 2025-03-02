@@ -62,7 +62,7 @@ pub async fn init(project_name: &str) {
     *logger = Some(Pinelog::new(project_name));
 }
 
-async fn get_logger() -> Arc<Mutex<Option<Pinelog>>> {
+pub async fn get_logger() -> Arc<Mutex<Option<Pinelog>>> {
     LOGGER.clone()
 }
 
