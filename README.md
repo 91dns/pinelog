@@ -26,7 +26,7 @@ Initialize the logger and use the logging macros:
 use pinelog::{init, info, warn, error};
 
 fn main() {
-    pine::init("my_project").await;
+    pine::init("my_project");
 
     info!("This is an info message.");
     warn!("This is a warning message.");
