@@ -1,10 +1,12 @@
+use chrono::Local;
+use lazy_static::lazy_static;
 use std::fmt;
 use std::sync::Arc;
-use std::time::{SystemTime, UNIX_EPOCH};
-use tokio::sync::Mutex;
+use std::sync::Mutex;
 
-static LOGGER: once_cell::sync::Lazy<Arc<Mutex<Option<Pinelog>>>> =
-    once_cell::sync::Lazy::new(|| Arc::new(Mutex::new(None)));
+lazy_static! {
+    static ref LOGGER: Arc<Mutex<Pinelog>> = Arc::new(Mutex::new(Pinelog::new("DefaultProject")));
+}
 
 pub struct Pinelog {
     project_name: String,
@@ -18,10 +20,10 @@ impl Pinelog {
     }
 
     pub fn log(&self, level: LogLevel, message: &str) {
-        let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-        let timestamp = now.as_secs();
+        let now = Local::now();
+        let timestamp = now.format("%H:%M:%S");
         println!(
-            "[{}] {} {}: \"{}\"",
+            "[{}] {} {}: {}",
             timestamp, level, self.project_name, message
         );
     }
@@ -57,44 +59,38 @@ impl fmt::Display for LogLevel {
     }
 }
 
-pub async fn init(project_name: &str) {
-    let mut logger = LOGGER.lock().await;
-    *logger = Some(Pinelog::new(project_name));
+pub fn init(project_name: &str) {
+    let mut logger = LOGGER.lock().unwrap();
+    *logger = Pinelog::new(project_name);
 }
 
-pub async fn get_logger() -> Arc<Mutex<Option<Pinelog>>> {
+pub fn get_logger() -> Arc<Mutex<Pinelog>> {
     LOGGER.clone()
 }
 
 #[macro_export]
 macro_rules! info {
-    ($($arg:tt)*) => ({
-        let logger = $crate::get_logger().await;
-        let logger = logger.lock().await;
-        if let Some(ref logger) = *logger {
-            logger.info(&format!($($arg)*));
-        }
-    })
+    ($($arg:tt)*) => {{
+        let logger = $crate::get_logger();
+        let logger = logger.lock().unwrap();
+        logger.info(&format!($($arg)*));
+    }}
 }
 
 #[macro_export]
 macro_rules! warn {
-    ($($arg:tt)*) => ({
-        let logger = $crate::get_logger().await;
-        let logger = logger.lock().await;
-        if let Some(ref logger) = *logger {
-            logger.warn(&format!($($arg)*));
-        }
-    })
+    ($($arg:tt)*) => {{
+        let logger = $crate::get_logger();
+        let logger = logger.lock().unwrap();
+        logger.warn(&format!($($arg)*));
+    }}
 }
 
 #[macro_export]
 macro_rules! error {
-    ($($arg:tt)*) => ({
-        let logger = $crate::get_logger().await;
-        let logger = logger.lock().await;
-        if let Some(ref logger) = *logger {
-            logger.error(&format!($($arg)*));
-        }
-    })
+    ($($arg:tt)*) => {{
+        let logger = $crate::get_logger();
+        let logger = logger.lock().unwrap();
+        logger.error(&format!($($arg)*));
+    }}
 }
