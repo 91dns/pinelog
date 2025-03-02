@@ -1,6 +1,3 @@
-### `README.md`
-
-```md
 # Pinelog
 
 Pinelog is a simple logging library for Rust, designed to be used in a synchronous context.
@@ -9,25 +6,23 @@ Pinelog is a simple logging library for Rust, designed to be used in a synchrono
 
 - INFO, WARN, ERROR levels.
 - Supports formatted strings.
-- Output format: `[TIME] LOGLEVEL(COLOR) project_name: "Message"`
+- Output format: `[TIME] LOGLEVEL(COLOR): "Message"`
 
 ## Usage
 
-Add Pine to your `Cargo.toml`:
+Add Pinelog to your `Cargo.toml`:
 
 ```toml
 [dependencies]
 pinelog = "0.1.0"
 ```
 
-Initialize the logger and use the logging macros:
+Use the logging macros in your code:
 
 ```rust
-use pinelog::{init, info, warn, error};
+use pinelog::{info, warn, error};
 
 fn main() {
-    pine::init("my_project");
-
     info!("This is an info message.");
     warn!("This is a warning message.");
     error!("This is an error message.");
