@@ -17,7 +17,7 @@ Add Pine to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-pinelog = "0.1.0"
+pinelog = "0.2.0"
 ```
 
 Initialize the logger and use the logging macros:
