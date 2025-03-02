@@ -7,7 +7,7 @@ Pinelog is a simple logging library for Rust, designed to be used in a synchrono
 
 ## Features
 
-- INFO (Green), WARN (Yellow), ERROR (Red) levels.
+- INFO, WARN, ERROR levels.
 - Supports formatted strings.
 - Output format: `[TIME] LOGLEVEL(COLOR) project_name: "Message"`
 
