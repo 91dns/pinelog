@@ -14,4 +14,3 @@ categories = ["development-tools"]
 [dependencies]
 chrono = "0.4.40"
 lazy_static = "1.5.0"
-tokio = { version = "1.43.0", features = ["full"] }
