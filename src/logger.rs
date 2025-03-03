@@ -1,4 +1,5 @@
 use crate::level::LogLevel;
+use crate::settings::Settings;
 
 use chrono::Local;
 use lazy_static::lazy_static;
@@ -15,6 +16,7 @@ lazy_static! {
         AsyncMutex::new(Pinelog::new(LogLevel::INFO, None, Mode::Async));
 }
 
+/// Represents the mode of the logger (synchronous or asynchronous).
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Mode {
     Sync,
@@ -66,9 +68,14 @@ impl Pinelog {
     ///
     /// * `min_level` - The minimum log level to log.
     /// * `file_path` - The path to the log file, if any.
-    pub fn init_sync(min_level: LogLevel, file_path: Option<&str>) {
+    pub fn init_sync(settings_path: &str) {
+        let settings = Settings::load(settings_path);
         let mut logger = SYNC_LOGGER.lock().unwrap();
-        *logger = Pinelog::new(min_level, file_path, Mode::Sync);
+        *logger = Pinelog::new(
+            settings.min_level,
+            settings.file_path.as_deref(),
+            Mode::Sync,
+        );
     }
 
     /// Initializes the global asynchronous logger with the specified minimum log level and optional file path.
@@ -77,8 +84,9 @@ impl Pinelog {
     ///
     /// * `min_level` - The minimum log level to log.
     /// * `file_path` - The path to the log file, if any.
-    pub async fn init_async(min_level: LogLevel, file_path: Option<&str>) {
-        let async_file = if let Some(path) = file_path {
+    pub async fn init_async(settings_path: &str) {
+        let settings = Settings::load(settings_path);
+        let async_file = if let Some(path) = settings.file_path {
             Some(
                 AsyncOpenOptions::new()
                     .append(true)
@@ -93,7 +101,7 @@ impl Pinelog {
 
         let mut logger = ASYNC_LOGGER.lock().await;
         *logger = Pinelog {
-            min_level,
+            min_level: settings.min_level,
             file: None,
             async_file,
             mode: Mode::Async,

@@ -1,7 +1,8 @@
 use colored::*;
+use serde::Deserialize;
 use std::fmt;
 
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Deserialize)]
 /// Represents the different log levels.
 pub enum LogLevel {
     /// Informational messages.
