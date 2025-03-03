@@ -1,4 +1,5 @@
 use crate::level::LogLevel;
+
 use serde::Deserialize;
 use std::fs;
 
