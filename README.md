@@ -12,6 +12,7 @@ Pinelog is a simple logging library for Rust, designed to be used in both synchr
 - Output format: `[TIME] LOGLEVEL(COLOR): "Message"`
 - Asynchronous logging support with `tokio`.
 - **Thread-safe**: Safe to use in multi-threaded environments.
+- Configurable via a TOML settings file.
 
 ## Usage
 
@@ -36,11 +37,8 @@ Initialize the global logger with a minimum log level and optional log file path
 use pinelog::prelude::*;
 
 fn main() {
-    // Initialize the logger with minimum log level and no log file
-    Pinelog::init_sync(LogLevel::INFO, None);
-
-    // Initialize the logger with minimum log level and a log file
-    // Pinelog::init_sync(LogLevel::WARN, Some("logfile.log"));
+    // Initialize the logger with settings from a TOML file
+    Pinelog::init_sync("settings.toml");
 
     info!("This is an info message.");
     warn!("This is a warning message.");
@@ -64,11 +62,8 @@ use tokio;
 
 #[tokio::main]
 async fn main() {
-    // Initialize the asynchronous logger with minimum log level and no log file
-    Pinelog::init_async(LogLevel::INFO, None).await;
-
-    // Initialize the asynchronous logger with minimum log level and a log file
-    // Pinelog::init_async(LogLevel::WARN, Some("async_logfile.log")).await;
+    // Initialize the asynchronous logger with settings from a TOML file
+    Pinelog::init_async("settings.toml").await;
 
     async_info!("This is an async info message").await;
     async_warn!("This is an async warning message").await;
@@ -80,6 +75,19 @@ async fn main() {
 }
 ```
 
+### Example Settings File
+
+You must configure the logger using a TOML settings file. Create a `settings.toml` file with the following content:
+
+```toml
+min_level = "INFO"
+# file_path = "logfile.log"
+```
+
+In this example, the `file_path` field is optional. If you do not want to log to a file, you can omit this field.
+
+> **Note:** settings.toml needs to be created in root of your project folder.
+
 ## Dependencies
 
 Pinelog depends on the following crates:
@@ -90,6 +98,8 @@ chrono = "0.4.40"
 colored = "3.0.0"
 lazy_static = "1.5.0"
 tokio = { version = "1.43.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.5.8"
 ```
 
 ## License
