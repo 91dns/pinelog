@@ -1,5 +1,5 @@
 use crate::level::LogLevel;
-use crate::settings::Settings;
+use crate::settings::{Settings, Timestamp};
 
 use chrono::Local;
 use lazy_static::lazy_static;
@@ -11,9 +11,9 @@ use tokio::sync::Mutex as AsyncMutex;
 
 lazy_static! {
     pub static ref SYNC_LOGGER: Mutex<Pinelog> =
-        Mutex::new(Pinelog::new(LogLevel::INFO, None, Mode::Sync));
+        Mutex::new(Pinelog::new(LogLevel::INFO, None, None, Mode::Sync));
     pub static ref ASYNC_LOGGER: AsyncMutex<Pinelog> =
-        AsyncMutex::new(Pinelog::new(LogLevel::INFO, None, Mode::Async));
+        AsyncMutex::new(Pinelog::new(LogLevel::INFO, None, None, Mode::Async));
 }
 
 /// Represents the mode of the logger (synchronous or asynchronous).
@@ -28,6 +28,7 @@ pub struct Pinelog {
     min_level: LogLevel,
     file: Option<std::fs::File>,
     async_file: Option<tokio::fs::File>,
+    timestamp: Option<Timestamp>,
     mode: Mode,
 }
 
@@ -38,8 +39,14 @@ impl Pinelog {
     ///
     /// * `min_level` - The minimum log level to log.
     /// * `file_path` - The path to the log file, if any.
+    /// * `timestamp` - The timestamp format to use, if any.
     /// * `mode` - The mode of the logger (synchronous or asynchronous).
-    pub fn new(min_level: LogLevel, file_path: Option<&str>, mode: Mode) -> Self {
+    pub fn new(
+        min_level: LogLevel,
+        file_path: Option<&str>,
+        timestamp: Option<Timestamp>,
+        mode: Mode,
+    ) -> Self {
         let file = if mode == Mode::Sync {
             file_path.map(|path| {
                 OpenOptions::new()
@@ -58,6 +65,7 @@ impl Pinelog {
             min_level,
             file,
             async_file,
+            timestamp,
             mode,
         }
     }
@@ -74,6 +82,7 @@ impl Pinelog {
         *logger = Pinelog::new(
             settings.min_level,
             settings.file_path.as_deref(),
+            settings.timestamp,
             Mode::Sync,
         );
     }
@@ -104,6 +113,7 @@ impl Pinelog {
             min_level: settings.min_level,
             file: None,
             async_file,
+            timestamp: settings.timestamp,
             mode: Mode::Async,
         };
     }
@@ -117,7 +127,12 @@ impl Pinelog {
     pub async fn log(&mut self, level: LogLevel, args: Arguments<'_>) {
         if level >= self.min_level {
             let now = Local::now();
-            let time_str = now.format("%H:%M:%S").to_string();
+            let time_str = match self.timestamp {
+                Some(Timestamp::DATE) => now.format("%Y-%m-%d").to_string(),
+                Some(Timestamp::TIME) => now.format("%H:%M:%S").to_string(),
+                Some(Timestamp::FULL) => now.format("%Y-%m-%d %H:%M:%S").to_string(),
+                None => String::new(),
+            };
             let level_str = level.to_colored_string();
             println!("{} [{}] {}", time_str, level_str, args);
 

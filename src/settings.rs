@@ -3,10 +3,17 @@ use serde::Deserialize;
 use std::fs;
 
 #[derive(Deserialize)]
+pub enum Timestamp {
+    DATE,
+    TIME,
+    FULL,
+}
+
+#[derive(Deserialize)]
 pub struct Settings {
     pub min_level: LogLevel,
     pub file_path: Option<String>,
-    pub timestamp: Option<String>,
+    pub timestamp: Option<Timestamp>,
 }
 
 impl Settings {
