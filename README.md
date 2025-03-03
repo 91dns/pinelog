@@ -1,6 +1,7 @@
+```md
 # Pinelog
 
-Pinelog is a simple logging library for Rust, designed to be used in a synchronous context.
+Pinelog is a simple logging library for Rust, designed to be used in both synchronous and asynchronous contexts.
 
 ## Features
 
@@ -10,6 +11,7 @@ Pinelog is a simple logging library for Rust, designed to be used in a synchrono
 - Configurable minimum log level.
 - Optional log file support.
 - Output format: `[TIME] LOGLEVEL(COLOR): "Message"`
+- Asynchronous logging support with `tokio`.
 
 ## Usage
 
@@ -25,6 +27,8 @@ Alternatively, you can add Pinelog using the `cargo add` command:
 ```sh
 cargo add pinelog
 ```
+
+### Synchronous Logging
 
 Initialize the global logger with a minimum log level and optional log file path:
 
@@ -48,6 +52,45 @@ fn main() {
 }
 ```
 
+### Asynchronous Logging
+
+Initialize the global asynchronous logger with a minimum log level and optional log file path:
+
+```rust
+use pinelog::prelude::*;
+use tokio;
+
+#[tokio::main]
+async fn main() {
+    // Initialize the asynchronous logger with minimum log level and no log file
+    AsyncPinelog::init(LogLevel::INFO, None).await;
+
+    // Initialize the asynchronous logger with minimum log level and a log file
+    // AsyncPinelog::init(LogLevel::WARN, Some("async_logfile.log")).await;
+
+    async_info!("This is an async info message").await;
+    async_warn!("This is an async warning message").await;
+    async_error!("This is an async error message").await;
+
+    async_info!("This is a formatted async info message: {}", 42).await;
+    async_warn!("This is a formatted async warning message: {}", 42).await;
+    async_error!("This is a formatted async error message: {}", 42).await;
+}
+```
+
+## Dependencies
+
+Pinelog depends on the following crates:
+
+```toml
+[dependencies]
+chrono = "0.4.40"
+colored = "3.0.0"
+lazy_static = "1.5.0"
+tokio = { version = "1.43.0", features = ["full"] }
+```
+
 ## License
 
 Pinelog is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+```
