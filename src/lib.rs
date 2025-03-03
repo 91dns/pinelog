@@ -5,3 +5,4 @@ pub mod logger;
 mod macros;
 
 pub mod prelude;
+mod settings;
