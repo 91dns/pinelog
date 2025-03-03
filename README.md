@@ -36,10 +36,10 @@ use pinelog::prelude::*;
 
 fn main() {
     // Initialize the logger with minimum log level and no log file
-    Pinelog::init(LogLevel::INFO, None);
+    Pinelog::init_sync(LogLevel::INFO, None);
 
     // Initialize the logger with minimum log level and a log file
-    // Pinelog::init(LogLevel::WARN, Some("logfile.log"));
+    // Pinelog::init_sync(LogLevel::WARN, Some("logfile.log"));
 
     info!("This is an info message.");
     warn!("This is a warning message.");
@@ -53,6 +53,8 @@ fn main() {
 
 ### Asynchronous Logging
 
+> **Note:** Asynchronous logging is useful in scenarios where you have an asynchronous application, such as a web server or any application that performs I/O-bound tasks. Using asynchronous logging helps to avoid blocking the main thread, ensuring that your application remains responsive.
+
 Initialize the global asynchronous logger with a minimum log level and optional log file path:
 
 ```rust
@@ -62,10 +64,10 @@ use tokio;
 #[tokio::main]
 async fn main() {
     // Initialize the asynchronous logger with minimum log level and no log file
-    AsyncPinelog::init(LogLevel::INFO, None).await;
+    Pinelog::init_async(LogLevel::INFO, None).await;
 
     // Initialize the asynchronous logger with minimum log level and a log file
-    // AsyncPinelog::init(LogLevel::WARN, Some("async_logfile.log")).await;
+    // Pinelog::init_async(LogLevel::WARN, Some("async_logfile.log")).await;
 
     async_info!("This is an async info message").await;
     async_warn!("This is an async warning message").await;
