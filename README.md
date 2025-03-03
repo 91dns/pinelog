@@ -80,8 +80,9 @@ async fn main() {
 You must configure the logger using a TOML settings file. Create a `settings.toml` file with the following content:
 
 ```toml
-min_level = "INFO"
-# file_path = "logfile.log"
+min_level = "INFO"        # Options: INFO, WARN, ERROR (mandatory)
+file_path = "logfile.log" # (optional)
+timestamp = "FULL"        # Options: FULL, TIME, DATE (optional)
 ```
 
 In this example, the `file_path` field is optional. If you do not want to log to a file, you can omit this field.
