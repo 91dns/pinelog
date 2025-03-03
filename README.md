@@ -1,4 +1,3 @@
-```md
 # Pinelog
 
 Pinelog is a simple logging library for Rust, designed to be used in both synchronous and asynchronous contexts.
@@ -93,4 +92,3 @@ tokio = { version = "1.43.0", features = ["full"] }
 ## License
 
 Pinelog is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-```
