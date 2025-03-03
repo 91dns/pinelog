@@ -11,6 +11,7 @@ Pinelog is a simple logging library for Rust, designed to be used in both synchr
 - Optional log file support.
 - Output format: `[TIME] LOGLEVEL(COLOR): "Message"`
 - Asynchronous logging support with `tokio`.
+- **Thread-safe**: Safe to use in multi-threaded environments.
 
 ## Usage
 
