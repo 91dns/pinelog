@@ -6,7 +6,7 @@
 #[macro_export]
 macro_rules! info {
     ($($arg:tt)*) => {
-        $crate::logger::Logger.info(format_args!($($arg)*));
+        $crate::logger::LOGGER.lock().unwrap().info(format_args!($($arg)*));
     };
 }
 
@@ -18,7 +18,7 @@ macro_rules! info {
 #[macro_export]
 macro_rules! warn {
     ($($arg:tt)*) => {
-        $crate::logger::Logger.warn(format_args!($($arg)*));
+        $crate::logger::LOGGER.lock().unwrap().warn(format_args!($($arg)*));
     };
 }
 
@@ -30,6 +30,6 @@ macro_rules! warn {
 #[macro_export]
 macro_rules! error {
     ($($arg:tt)*) => {
-        $crate::logger::Logger.error(format_args!($($arg)*));
+        $crate::logger::LOGGER.lock().unwrap().error(format_args!($($arg)*));
     };
 }
