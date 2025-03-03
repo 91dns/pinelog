@@ -87,7 +87,7 @@ timestamp = "FULL"        # Options: FULL, TIME, DATE (optional)
 
 In this example, the `file_path` field is optional. If you do not want to log to a file, you can omit this field.
 
-> **Note:** settings.toml needs to be created in root of your project folder.
+> **Note:** settings.toml needs to be created in root of your project folder. You can name the file whatever you want.
 
 ## Dependencies
 
